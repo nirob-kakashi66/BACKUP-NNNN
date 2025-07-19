@@ -1,66 +1,64 @@
-const axios = require('axios');
-const fs = require('fs');
-const path = require('path');
-
 module.exports = {
-config: {
-  name: "owner",
-  aurthor:"Tokodori",// Convert By Goatbot Tokodori 
-   role: 0,
-  shortDescription: " ",
-  longDescription: "",
-  category: "admin",
-  guide: "{pn}"
-},
+  config: {
+    name: "owner",
+    version: "1.0",
+    author: "NIROB",
+    countDown: 5,
+    role: 0,
+    shortDescription: "admin and info",
+    longDescription: "bot owner info",
+    category: "auto ✅"
+  },
 
-  onStart: async function ({ api, event }) {
-  try {
-    const ownerInfo = {
-      name: '𝐍𝐈𝐑𝐎𝐁',
-      gender: 'MaLe',
-      age: '18+',
-      height: '𝐉𝐀𝐍𝐈 𝐍𝐀',
-      choise: '',
-      nick: '😒'
-    };
+  onStart: async function ({
+    event,
+    message,
+    getLang,
+    usersData,
+    threadsData
+  }) {
+    const userData = await usersData.get(event.senderID);
+    const userName = userData.name;
+    const threadData = await threadsData.get(event.threadID);
+    const threadName = threadData.threadName;
 
-    const bold = 'https://files.catbox.moe/a86iqb.mp4'; // Replace with your Google Drive videoid link https://drive.google.com/uc?export=download&id=here put your video id
+    const now = new Date();
+    const dateStr = now.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "numeric",
+      day: "numeric"
+    });
+    const timeStr = now.toLocaleTimeString("en-US", {
+      timeZone: "Asia/Dhaka",
+      hour12: true
+    });
 
-    const tmpFolderPath = path.join(__dirname, 'tmp');
+    const infoMessage = `╔╝❮${userName}❯╚╗
+━━━━━━━━━━━━━━━━━━━━━━
+𝐍𝐀𝐌𝐄: NIROB HOSSAIN
+𝐑𝐄𝐋𝐈𝐆𝐈𝐎𝐍: ISLAM
+𝐀𝐃𝐃𝐑𝐄𝐒𝐒: Munshiganj
+𝐆𝐄𝐍𝐃𝐄𝐑: MALE
+𝐀𝐆𝐄: 18
+𝐑𝐄𝐋𝐀𝐓𝐈𝐎𝐍𝐒𝐇𝐈𝐏: 𝐅𝐀𝐈𝐋𝐄𝐃
+𝐖𝐎𝐑𝐊: NTG
+𝐆𝐌𝐀𝐈𝐋: nahadnirob@gmail.com
+𝐅𝐀𝐂𝐄𝐁𝐎𝐎𝐊: https://www.facebook.com/nirob.nahad007
+𝐌𝐀𝐒𝐒𝐄𝐍𝐆𝐄𝐑: N/A
+𝐖𝐇𝐀𝐓𝐒𝐀𝐏𝐏: wa.me/+8801772594397
+𝐈𝐌𝐎: PERSONAL 🫣
+𝐓𝐄𝐋𝐄𝐆𝐑𝐀𝐌: N/A
+━━━━━━━━━━━━━━━━━━━━━━
 
-    if (!fs.existsSync(tmpFolderPath)) {
-      fs.mkdirSync(tmpFolderPath);
-    }
+Bot Prefix: ( . )
+Bot Name: CAT BOT
+GC Name: ${threadName}
+Time:【 ${dateStr} || ${timeStr} 】
+━━━━━━━━━━━━━━━━━━━━━━`;
 
-    const videoResponse = await axios.get(bold, { responseType: 'arraybuffer' });
-    const videoPath = path.join(tmpFolderPath, 'owner_video.mp4');
-
-    fs.writeFileSync(videoPath, Buffer.from(videoResponse.data, 'binary'));
-
-    const response = ` 
-╭[ .  ]•〆 NIROB 〆 ]  ─⦿
-╭────────────◊
-├‣ 𝐁𝐨𝐭 & 𝐎𝐰𝐧𝐞𝐫 𝐈𝐧𝐟𝐨𝐫𝐦𝐚𝐭𝐢𝐨𝐧 
-├‣ 𝐍𝐚𝐦𝐞: ${ownerInfo.name}
-├‣ 𝐆𝐞𝐧𝐝𝐞𝐫:  ${ownerInfo.gender}
-├‣ 𝐀𝐠𝐞 .${ownerInfo.age}
-├‣ 𝐍𝐢𝐜𝐤 : ${ownerInfo.nick}
-├‣ 𝐂𝐡𝐨𝐢𝐬𝐞:  ${ownerInfo.choise}   
-├‣ 𝐇𝐞𝐢𝐠𝐡𝐭 : ${ownerInfo.height}
-╰────────────◊ 
-`;
-
-    await api.sendMessage({
-      body: response,
-      attachment: fs.createReadStream(videoPath)
-    }, event.threadID, event.messageID);
-
-    if (event.body.toLowerCase().includes('ownerinfo')) {
-      api.setMessageReaction('🖤', event.messageID, (err) => {}, true);
-    }
-  } catch (error) {
-    console.error('Error in ownerinfo command:', error);
-    return api.sendMessage('An error occurred while processing the command.', event.threadID);
-  }
-},
+    await message.reply({
+      body: infoMessage,
+      attachment: await global.utils.getStreamFromURL("https://files.catbox.moe/a86iqb.mp4")
+    });
+  }
 };
